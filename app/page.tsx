@@ -17,57 +17,19 @@ function SkillCard({
   description: string;
   tags: string[];
 }) {
-  const [hovered, setHovered] = useState(false);
   const rgb = hexToRgb(accent);
+  const accentVars = { '--accent': accent, '--accent-rgb': rgb } as CSSProperties;
 
   return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        background: '#fff',
-        border: `1px solid ${hovered ? accent : '#dbe4ee'}`,
-        borderRadius: 16,
-        padding: 30,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 20,
-        transition: 'border-color 0.25s',
-        boxShadow: '0 1px 4px rgba(30,58,95,0.04)',
-      }}
-    >
-      <div
-        style={{
-          width: 48,
-          height: 48,
-          borderRadius: 12,
-          background: `rgba(${rgb}, 0.08)`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-        }}
-      >
-        {icon}
-      </div>
+    <div className="skill-card" style={accentVars}>
+      <div className="skill-card-icon">{icon}</div>
       <div>
-        <h3 style={{ fontSize: 17, fontWeight: 700, color: '#1e3a5f' }}>{title}</h3>
-        <p style={{ fontSize: 14, color: '#4a6a8a', marginTop: 8, lineHeight: 1.75 }}>{description}</p>
+        <h3 className="skill-card-title">{title}</h3>
+        <p className="skill-card-desc">{description}</p>
       </div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+      <div className="skill-card-tags">
         {tags.map((tag) => (
-          <span
-            key={tag}
-            style={{
-              background: `rgba(${rgb}, 0.07)`,
-              border: `1px solid rgba(${rgb}, 0.18)`,
-              color: accent,
-              fontSize: 12,
-              fontWeight: 500,
-              padding: '4px 12px',
-              borderRadius: 100,
-            }}
-          >
+          <span key={tag} className="skill-card-tag">
             {tag}
           </span>
         ))}
@@ -85,7 +47,6 @@ function FooterLink({
   label: string;
   icon: ReactNode;
 }) {
-  const [hovered, setHovered] = useState(false);
   const isExternal = href.startsWith('http');
 
   return (
@@ -93,18 +54,7 @@ function FooterLink({
       href={href}
       target={isExternal ? '_blank' : undefined}
       rel={isExternal ? 'noopener noreferrer' : undefined}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        color: hovered ? '#1e3a5f' : '#94aac0',
-        textDecoration: 'none',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 7,
-        fontSize: 13,
-        fontWeight: 500,
-        transition: 'color 0.2s',
-      }}
+      className="footer-link"
     >
       {icon}
       {label}
@@ -146,97 +96,25 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinkColor = (id: string) => (activeSection === id ? '#2563eb' : '#94aac0');
-
-  const inputStyle: CSSProperties = {
-    background: '#fff',
-    border: '1px solid #dbe4ee',
-    borderRadius: 10,
-    padding: '12px 16px',
-    fontSize: 14,
-    color: '#1e3a5f',
-    outline: 'none',
-    width: '100%',
-    transition: 'border-color 0.2s',
-  };
-
-  const labelStyle: CSSProperties = {
-    fontSize: 12.5,
-    fontWeight: 600,
-    color: '#4a6a8a',
-    letterSpacing: '0.04em',
-    textTransform: 'uppercase',
-  };
-
   return (
     <>
       {/* ── NAV ───────────────────────────────────────────────── */}
-      <nav
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 100,
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          background: navScrolled ? 'rgba(240,244,248,0.95)' : 'rgba(240,244,248,0)',
-          borderBottom: `1px solid ${navScrolled ? '#dbe4ee' : 'transparent'}`,
-          height: 68,
-          display: 'flex',
-          alignItems: 'center',
-          transition: 'background 0.4s, border-color 0.4s',
-        }}
-      >
-        <div
-          style={{
-            maxWidth: 1120,
-            margin: '0 auto',
-            padding: '0 32px',
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <a
-            href="#about"
-            style={{ fontSize: 19, fontWeight: 800, color: '#1e3a5f', textDecoration: 'none', letterSpacing: '-0.5px' }}
-          >
-            rg<span style={{ color: '#2563eb' }}>.</span>
+      <nav className={`nav${navScrolled ? ' scrolled' : ''}`}>
+        <div className="nav-inner">
+          <a href="#about" className="nav-logo">
+            rg<span className="brand-dot">.</span>
           </a>
-          <div style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
+          <div className="nav-links">
             {(['about', 'skills', 'experience'] as const).map((id) => (
               <a
                 key={id}
                 href={`#${id}`}
-                style={{
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: navLinkColor(id),
-                  textDecoration: 'none',
-                  transition: 'color 0.2s',
-                  textTransform: 'capitalize',
-                }}
+                className={`nav-link${activeSection === id ? ' active' : ''}`}
               >
                 {id === 'about' ? 'About' : id === 'skills' ? 'Skills' : 'Experience'}
               </a>
             ))}
-            <a
-              href="#contact"
-              style={{
-                fontSize: 14,
-                fontWeight: 600,
-                background: '#2563eb',
-                color: '#fff',
-                padding: '9px 22px',
-                borderRadius: 8,
-                textDecoration: 'none',
-                transition: 'opacity 0.2s',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.88')}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-            >
+            <a href="#contact" className="nav-cta">
               Let&apos;s Talk
             </a>
           </div>
@@ -244,189 +122,60 @@ export default function Home() {
       </nav>
 
       {/* ── HERO ──────────────────────────────────────────────── */}
-      <section
-        id="about"
-        style={{
-          position: 'relative',
-          overflow: 'hidden',
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          padding: '120px 32px 80px',
-          background:
-            'radial-gradient(ellipse 70% 60% at 10% 50%, rgba(37,99,235,0.07) 0%, transparent 60%), #f0f4f8',
-        }}
-      >
-        <div style={{ maxWidth: 1120, margin: '0 auto', width: '100%', position: 'relative', zIndex: 1 }}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 28,
-              maxWidth: 740,
-              animation: 'fadeUp 0.75s ease both',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div
-                style={{
-                  width: 9,
-                  height: 9,
-                  borderRadius: '50%',
-                  background: '#059669',
-                  flexShrink: 0,
-                  animation: 'pulseDot 2.2s ease-in-out infinite',
-                }}
-              />
-              <span
-                style={{
-                  fontSize: 12,
-                  fontWeight: 600,
-                  color: '#94aac0',
-                  letterSpacing: '0.1em',
-                  textTransform: 'uppercase',
-                }}
-              >
-                Available for projects
-              </span>
+      <section id="about" className="hero">
+        <div className="hero-inner">
+          <div className="hero-content">
+            <div className="hero-badge">
+              <div className="hero-badge-dot" />
+              <span className="hero-badge-text">Available for projects</span>
             </div>
 
-            <h1
-              style={{
-                fontSize: 'clamp(44px,7vw,82px)',
-                fontWeight: 800,
-                lineHeight: 1.07,
-                letterSpacing: '-2.5px',
-                color: '#1e3a5f',
-              }}
-            >
+            <h1 className="hero-title">
               Hi, I&apos;m<br />
-              <span style={{ color: '#2563eb' }}>Robert Garcia</span>
+              <span className="brand-dot">Robert Garcia</span>
             </h1>
 
-            <p style={{ fontSize: 17, fontWeight: 500, color: '#94aac0', letterSpacing: '0.01em' }}>
-              Software Engineer · Miami, FL
+            <p className="hero-subtitle">Software Engineer · Miami, FL</p>
+
+            <p className="hero-description">
+              I build reliable, scalable web applications for small businesses.
+              Currently diving deep into the exciting world of
+              AI-driven agentic workflows and prompt pipeline design. 
+              I care about writing clean code that solves real problems.
             </p>
 
-            <p style={{ fontSize: 16, lineHeight: 1.85, color: '#4a6a8a', maxWidth: 580 }}>
-              I build reliable, scalable web applications with{' '}
-              <strong style={{ color: '#1e3a5f', fontWeight: 600 }}>Ruby on Rails</strong> — and I&apos;m
-              diving deep into the exciting world of{' '}
-              <strong style={{ color: '#1e3a5f', fontWeight: 600 }}>AI-driven agentic workflows</strong> and
-              prompt pipeline design. I care about writing clean code that solves real problems.
-            </p>
-
-            <div style={{ display: 'flex', gap: 14, marginTop: 4, flexWrap: 'wrap' }}>
-              <a
-                href="#contact"
-                style={{
-                  background: '#2563eb',
-                  color: '#fff',
-                  fontSize: 15,
-                  fontWeight: 700,
-                  padding: '14px 28px',
-                  borderRadius: 10,
-                  textDecoration: 'none',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 9,
-                  transition: 'opacity 0.2s',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.88')}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-              >
+            <div className="hero-actions">
+              <a href="#contact" className="btn-primary">
                 Get in Touch
                 <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                   <path d="M2.5 7.5h10M8.5 3.5l4 4-4 4" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </a>
-              <a
-                href="#skills"
-                style={{
-                  border: '1.5px solid #dbe4ee',
-                  color: '#4a6a8a',
-                  fontSize: 15,
-                  fontWeight: 600,
-                  padding: '14px 28px',
-                  borderRadius: 10,
-                  textDecoration: 'none',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 9,
-                  transition: 'border-color 0.2s, color 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = '#2563eb';
-                  e.currentTarget.style.color = '#2563eb';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = '#dbe4ee';
-                  e.currentTarget.style.color = '#4a6a8a';
-                }}
-              >
+              <a href="#skills" className="btn-secondary">
                 View Skills
               </a>
             </div>
           </div>
-        </div>
+        </div> 
 
         {/* decorative dot grid */}
-        <div
-          style={{
-            position: 'absolute',
-            right: 0,
-            top: 0,
-            bottom: 0,
-            width: '45%',
-            opacity: 0.04,
-            backgroundImage:
-              'linear-gradient(#1e3a5f 1px,transparent 1px),linear-gradient(90deg,#1e3a5f 1px,transparent 1px)',
-            backgroundSize: '48px 48px',
-            pointerEvents: 'none',
-          }}
-        />
+        <div className="hero-grid-decoration" />
       </section>
 
       {/* ── SKILLS ────────────────────────────────────────────── */}
-      <section id="skills" style={{ padding: '100px 32px', background: '#e6edf4' }}>
-        <div style={{ maxWidth: 1120, margin: '0 auto' }}>
-          <div style={{ marginBottom: 56 }}>
-            <span
-              style={{
-                fontSize: 11,
-                fontWeight: 700,
-                color: '#2563eb',
-                letterSpacing: '0.14em',
-                textTransform: 'uppercase',
-              }}
-            >
-              What I work with
-            </span>
-            <h2
-              style={{
-                fontSize: 'clamp(32px,5vw,44px)',
-                fontWeight: 800,
-                color: '#1e3a5f',
-                marginTop: 10,
-                letterSpacing: '-1.2px',
-              }}
-            >
-              Skills &amp; Expertise
-            </h2>
+      <section id="skills" className="section skills-section">
+        <div className="section-inner">
+          <div className="section-header">
+            <span className="eyebrow">What I work with</span>
+            <h2 className="section-title">Skills &amp; Expertise</h2>
           </div>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-              gap: 20,
-            }}
-          >
+          <div className="skills-grid">
             <SkillCard
               accent="#2563eb"
-              title="Ruby on Rails"
+              title="Web Development"
               description="Full-stack web development, REST APIs, background jobs, and scalable application architecture built for production."
-              tags={['MVC', 'ActiveRecord', 'REST APIs', 'Sidekiq']}
+              tags={['MVC', 'Postgres', 'REST APIs', 'Sidekiq']}
               icon={
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path d="M12 2L21 7.5V16.5L12 22L3 16.5V7.5L12 2Z" stroke="#2563eb" strokeWidth="1.5" strokeLinejoin="round" />
@@ -481,147 +230,61 @@ export default function Home() {
       </section>
 
       {/* ── EXPERIENCE ────────────────────────────────────────── */}
-      <section id="experience" style={{ padding: '100px 32px', background: '#f0f4f8' }}>
-        <div style={{ maxWidth: 1120, margin: '0 auto' }}>
-          <div style={{ marginBottom: 56 }}>
-            <span
-              style={{
-                fontSize: 11,
-                fontWeight: 700,
-                color: '#2563eb',
-                letterSpacing: '0.14em',
-                textTransform: 'uppercase',
-              }}
-            >
-              Background &amp; Achievements
-            </span>
-            <h2
-              style={{
-                fontSize: 'clamp(32px,5vw,44px)',
-                fontWeight: 800,
-                color: '#1e3a5f',
-                marginTop: 10,
-                letterSpacing: '-1.2px',
-              }}
-            >
-              Experience
-            </h2>
+      <section id="experience" className="section experience-section">
+        <div className="section-inner">
+          <div className="section-header">
+            <span className="eyebrow">Background &amp; Achievements</span>
+            <h2 className="section-title">Experience</h2>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'start' }}>
+          <div className="experience-grid">
             {/* Left: Overview */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-              <p style={{ fontSize: 16, lineHeight: 1.9, color: '#4a6a8a' }}>
+            <div className="experience-overview">
+              <p className="experience-text">
                 I&apos;m a Software Engineer with several years of professional experience building and shipping
                 production web applications. My core expertise is in{' '}
-                <strong style={{ color: '#1e3a5f', fontWeight: 600 }}>Ruby on Rails</strong> — from REST API
+                <strong className="text-emphasis">Ruby on Rails</strong> — from REST API
                 design and database architecture to background job systems and deployment pipelines.
               </p>
-              <p style={{ fontSize: 16, lineHeight: 1.9, color: '#4a6a8a' }}>
+              <p className="experience-text">
                 More recently I&apos;ve been channeling my curiosity into{' '}
-                <strong style={{ color: '#1e3a5f', fontWeight: 600 }}>AI and machine learning</strong> —
+                <strong className="text-emphasis">AI and machine learning</strong> —
                 building agentic workflows, designing prompt pipelines, and formalizing that knowledge through
                 Cornell University&apos;s ML &amp; AI certificate program.
               </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 4 }}>
+              <div className="experience-highlights">
                 {[
                   { color: '#2563eb', label: '4+ years of professional software engineering' },
                   { color: '#d97706', label: 'AI & agentic workflow development' },
                   { color: '#7c3aed', label: 'Full-stack Rails application delivery' },
                 ].map(({ color, label }) => (
-                  <div
-                    key={label}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 10,
-                      background: '#fff',
-                      border: '1px solid #dbe4ee',
-                      borderRadius: 12,
-                      padding: '12px 16px',
-                    }}
-                  >
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: color, flexShrink: 0 }} />
-                    <span style={{ fontSize: 14, fontWeight: 500, color: '#1e3a5f' }}>{label}</span>
+                  <div key={label} className="experience-highlight">
+                    <div className="experience-highlight-dot" style={{ background: color }} />
+                    <span className="experience-highlight-label">{label}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Right: eCornell Certificate */}
-            <div
-              style={{
-                background: '#fff',
-                border: '1.5px solid #e8c96a',
-                borderRadius: 20,
-                padding: 36,
-                boxShadow: '0 4px 28px rgba(217,119,6,0.09)',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 22,
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }}>
-                <div
-                  style={{
-                    width: 52,
-                    height: 52,
-                    borderRadius: 14,
-                    background: 'rgba(217,119,6,0.1)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                >
+            <div className="certificate-card">
+              <div className="certificate-header">
+                <div className="certificate-icon">
                   <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
                     <circle cx="13" cy="10" r="6" stroke="#d97706" strokeWidth="1.6" />
                     <path d="M9 17.5l-3 6.5 7-3 7 3-3-6.5" stroke="#d97706" strokeWidth="1.6" strokeLinejoin="round" />
                   </svg>
                 </div>
-                <span
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 700,
-                    color: '#d97706',
-                    letterSpacing: '0.1em',
-                    textTransform: 'uppercase',
-                    background: 'rgba(217,119,6,0.08)',
-                    border: '1px solid rgba(217,119,6,0.22)',
-                    padding: '4px 12px',
-                    borderRadius: 100,
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  Certificate
-                </span>
+                <span className="certificate-badge">Certificate</span>
               </div>
               <div>
-                <h3
-                  style={{
-                    fontSize: 21,
-                    fontWeight: 800,
-                    color: '#1e3a5f',
-                    letterSpacing: '-0.5px',
-                    lineHeight: 1.25,
-                  }}
-                >
+                <h3 className="certificate-title">
                   Machine Learning<br />&amp; Artificial Intelligence
                 </h3>
-                <p style={{ fontSize: 14, fontWeight: 600, color: '#d97706', marginTop: 10 }}>
-                  Cornell University · eCornell
-                </p>
-                <p style={{ fontSize: 13, color: '#94aac0', marginTop: 3 }}>2025</p>
+                <p className="certificate-org">Cornell University · eCornell</p>
+                <p className="certificate-year">2025</p>
               </div>
-              <p
-                style={{
-                  fontSize: 14,
-                  color: '#4a6a8a',
-                  lineHeight: 1.75,
-                  borderTop: '1px solid #f5edda',
-                  paddingTop: 20,
-                }}
-              >
+              <p className="certificate-desc">
                 Completed Cornell&apos;s professional certificate program covering machine learning
                 fundamentals, model training, neural networks, and real-world AI application design.
               </p>
@@ -631,67 +294,25 @@ export default function Home() {
       </section>
 
       {/* ── CONTACT ───────────────────────────────────────────── */}
-      <section id="contact" style={{ padding: '100px 32px', background: '#e6edf4' }}>
-        <div style={{ maxWidth: 1120, margin: '0 auto' }}>
-          <div style={{ maxWidth: 620 }}>
-            <span
-              style={{
-                fontSize: 11,
-                fontWeight: 700,
-                color: '#2563eb',
-                letterSpacing: '0.14em',
-                textTransform: 'uppercase',
-              }}
-            >
-              Let&apos;s work together
-            </span>
-            <h2
-              style={{
-                fontSize: 'clamp(32px,5vw,44px)',
-                fontWeight: 800,
-                color: '#1e3a5f',
-                marginTop: 10,
-                letterSpacing: '-1.2px',
-              }}
-            >
-              Get in Touch
-            </h2>
-            <p style={{ fontSize: 15, color: '#4a6a8a', lineHeight: 1.8, marginTop: 16, marginBottom: 40 }}>
+      <section id="contact" className="section contact-section">
+        <div className="section-inner">
+          <div className="contact-intro">
+            <span className="eyebrow">Let&apos;s work together</span>
+            <h2 className="section-title">Get in Touch</h2>
+            <p className="contact-desc">
               Have a project in mind, a problem to solve, or just want to connect? I&apos;d love to hear from
               you. Send me a message and I&apos;ll get back to you soon.
             </p>
 
             {formSubmitted ? (
-              <div
-                style={{
-                  background: '#fff',
-                  border: '1px solid #dbe4ee',
-                  borderRadius: 16,
-                  padding: '52px 40px',
-                  textAlign: 'center',
-                  boxShadow: '0 1px 4px rgba(30,58,95,0.06)',
-                }}
-              >
-                <div
-                  style={{
-                    width: 56,
-                    height: 56,
-                    borderRadius: '50%',
-                    background: 'rgba(5,150,105,0.1)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    margin: '0 auto 20px',
-                  }}
-                >
+              <div className="contact-success">
+                <div className="contact-success-icon">
                   <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
                     <path d="M5 13l6 6L21 7" stroke="#059669" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
-                <h3 style={{ fontSize: 21, fontWeight: 700, color: '#1e3a5f', marginBottom: 8 }}>
-                  Message Sent!
-                </h3>
-                <p style={{ fontSize: 14, color: '#4a6a8a', lineHeight: 1.6 }}>
+                <h3 className="contact-success-title">Message Sent!</h3>
+                <p className="contact-success-desc">
                   Thanks for reaching out, I&apos;ll be in touch shortly.
                 </p>
               </div>
@@ -725,11 +346,11 @@ export default function Home() {
                     setFormLoading(false);
                   }
                 }}
-                style={{ display: 'flex', flexDirection: 'column', gap: 20 }}
+                className="contact-form"
               >
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
-                    <label htmlFor="cf-name" style={labelStyle}>Name</label>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="cf-name" className="form-label">Name</label>
                     <input
                       id="cf-name"
                       type="text"
@@ -737,13 +358,11 @@ export default function Home() {
                       onChange={(e) => setFormName(e.target.value)}
                       placeholder="Your name"
                       required
-                      style={inputStyle}
-                      onFocus={(e) => (e.target.style.borderColor = '#2563eb')}
-                      onBlur={(e) => (e.target.style.borderColor = '#dbe4ee')}
+                      className="form-input"
                     />
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
-                    <label htmlFor="cf-email" style={labelStyle}>Email</label>
+                  <div className="form-group">
+                    <label htmlFor="cf-email" className="form-label">Email</label>
                     <input
                       id="cf-email"
                       type="email"
@@ -751,14 +370,12 @@ export default function Home() {
                       onChange={(e) => setFormEmail(e.target.value)}
                       placeholder="you@example.com"
                       required
-                      style={inputStyle}
-                      onFocus={(e) => (e.target.style.borderColor = '#2563eb')}
-                      onBlur={(e) => (e.target.style.borderColor = '#dbe4ee')}
+                      className="form-input"
                     />
                   </div>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
-                  <label htmlFor="cf-msg" style={labelStyle}>Message</label>
+                <div className="form-group">
+                  <label htmlFor="cf-msg" className="form-label">Message</label>
                   <textarea
                     id="cf-msg"
                     value={formMessage}
@@ -766,33 +383,11 @@ export default function Home() {
                     placeholder="Tell me about your project..."
                     required
                     rows={5}
-                    style={{ ...inputStyle, resize: 'vertical', minHeight: 130, lineHeight: 1.7 }}
-                    onFocus={(e) => (e.target.style.borderColor = '#2563eb')}
-                    onBlur={(e) => (e.target.style.borderColor = '#dbe4ee')}
+                    className="form-input form-textarea"
                   />
                 </div>
-                <div style={{ marginTop: 4, display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  <button
-                    type="submit"
-                    disabled={formLoading}
-                    style={{
-                      background: '#2563eb',
-                      color: '#fff',
-                      fontSize: 15,
-                      fontWeight: 700,
-                      padding: '14px 32px',
-                      borderRadius: 10,
-                      border: 'none',
-                      cursor: formLoading ? 'not-allowed' : 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 9,
-                      transition: 'opacity 0.2s',
-                      opacity: formLoading ? 0.7 : 1,
-                    }}
-                    onMouseEnter={(e) => { if (!formLoading) e.currentTarget.style.opacity = '0.88'; }}
-                    onMouseLeave={(e) => { if (!formLoading) e.currentTarget.style.opacity = '1'; }}
-                  >
+                <div className="form-actions">
+                  <button type="submit" disabled={formLoading} className="btn-submit">
                     {formLoading ? 'Sending…' : 'Send Message'}
                     {!formLoading && (
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -800,9 +395,7 @@ export default function Home() {
                       </svg>
                     )}
                   </button>
-                  {formError && (
-                    <p style={{ fontSize: 13, color: '#dc2626' }}>{formError}</p>
-                  )}
+                  {formError && <p className="form-error">{formError}</p>}
                 </div>
               </form>
             )}
@@ -811,25 +404,15 @@ export default function Home() {
       </section>
 
       {/* ── FOOTER ────────────────────────────────────────────── */}
-      <footer style={{ padding: '44px 32px', borderTop: '1px solid #dbe4ee', background: '#f0f4f8' }}>
-        <div
-          style={{
-            maxWidth: 1120,
-            margin: '0 auto',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: 24,
-          }}
-        >
+      <footer className="footer">
+        <div className="footer-inner">
           <div>
-            <span style={{ fontSize: 18, fontWeight: 800, color: '#1e3a5f', letterSpacing: '-0.5px' }}>
-              rg<span style={{ color: '#2563eb' }}>.</span>
+            <span className="footer-brand">
+              rg<span className="brand-dot">.</span>
             </span>
-            <p style={{ fontSize: 13, color: '#94aac0', marginTop: 6 }}>© 2026 Robert Garcia · Miami, FL</p>
+            <p className="footer-copyright">© 2026 Robert Garcia · Miami, FL</p>
           </div>
-          <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
+          <div className="footer-links">
             <FooterLink
               href="https://github.com/Robert-Garcia552"
               label="GitHub"
